@@ -434,20 +434,13 @@ def imageProc(q: Queue) -> None:
             elif FOUND and (time.time() - LAST_FOUND >= 5):
                 TERMINATE = True
                 try:
-                    q.put_nowait((TERMINATE, None))
+                    q.put_nowait((TERMINATE, "lost"))
                 except Full:
                     try:
                         q.get_nowait()
                     except Empty:
                         pass
                     # q.put_nowait((TERMINATE, None))
-                CMD_LOG_Q.put(
-                    (
-                        datetime.now().strftime("%d/%m/%Y-%H:%M:%S"),
-                        "IMAGE",
-                        "Lost",
-                    )
-                )
                 cprint("LOST", "red")
                 break
 
@@ -484,7 +477,7 @@ def imageProc(q: Queue) -> None:
             if key == ord("q"):  # if 'q' is pressed quit the loop
                 TERMINATE = True
                 try:
-                    q.put_nowait((TERMINATE, None))
+                    q.put_nowait((TERMINATE, "quit"))
                 except Full:
                     try:
                         q.get_nowait()
@@ -856,8 +849,8 @@ if __name__ == "__main__":
     if not os.path.isdir(f"log/{LOG_TIME}"):
         os.mkdir(f"log/{LOG_TIME}")
 
-    if not os.path.isdir("output"):
-        os.mkdir("output")
+    if not os.path.isdir("video"):
+        os.mkdir("video")
 
     LOG_TIME = datetime.now().strftime("%d%m%Y-%H%M%S")
 
@@ -918,8 +911,8 @@ if __name__ == "__main__":
 
     time.sleep(1)  # wait for everything to settle
 
-    # msg = "takeoff".encode(encoding=FORMAT)  # create message (takeoff)
-    # sent = socketSend(CMD_SOCK, msg, (TELLO_IP, CMD_PORT))  # send message to Tello
+    msg = "takeoff".encode(encoding=FORMAT)  # create message (takeoff)
+    sent = socketSend(CMD_SOCK, msg, (TELLO_IP, CMD_PORT))  # send message to Tello
 
     time.sleep(3)
 
@@ -938,13 +931,19 @@ if __name__ == "__main__":
             direction is True
         ) or not image_proc.is_alive():  # if get terminate signal from image proc.
             TERMINATE = True  # set TERMINATE flag to True to terminate all threads
-            cprint("got TERMINATE", "red")
+            CMD_LOG_Q.put(
+                (
+                    datetime.now().strftime("%d/%m/%Y-%H:%M:%S"),
+                    "IMAGE",
+                    center,
+                )
+            )
             break
 
         cmd(direction)  # control direction
 
-    # msg = "land".encode(encoding=FORMAT)  # create message (land)
-    # sent = socketSend(CMD_SOCK, msg, (TELLO_IP, CMD_PORT))  # send message to Tello
+    msg = "land".encode(encoding=FORMAT)  # create message (land)
+    sent = socketSend(CMD_SOCK, msg, (TELLO_IP, CMD_PORT))  # send message to Tello
 
     print()
 
