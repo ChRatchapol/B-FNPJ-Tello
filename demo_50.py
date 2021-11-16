@@ -7,8 +7,8 @@
 # ## Todo List for Testing
 # #- todo list for state and log
 # -todo 1. get state
-# todo 2. create state log file
-# todo 3. create log file
+# -todo 2. create state log file
+# -todo 3. create log file
 # #- todo list for image
 # -todo 1. get image stream to GCS in openCV
 # -todo 2. color detection
