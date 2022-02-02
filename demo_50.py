@@ -45,7 +45,7 @@ TERMINATE = False  # terminate flag for threads (in case of daemon don't work)
 # ? ↓ These values might be sensors size because when Tello switches to video mode in the Tello application, The video crop a little.
 MAX_VIDEO_WIDTH = 960  # max video width Tello can provide
 MAX_VIDEO_HEIGHT = 720  # max video height Tello can provide
-FPS = 25  # fps (30 in Tello specs. but we'll use 25)
+FPS = 15  # fps (30 in Tello specs. but we'll use 15)
 
 # * color detection stuffs
 LOWER_RED = np.array([0, 145, 50])  # lower red color for color detection
@@ -310,7 +310,7 @@ def imageThread(cap_q: Queue) -> None:
     IMG_PORT = 11111
     MAX_VIDEO_WIDTH = 960
     MAX_VIDEO_HEIGHT = 720
-    FPS = 25
+    FPS = 15
     ESC = "\x1B"
     CSI = f"{ESC}["
 
